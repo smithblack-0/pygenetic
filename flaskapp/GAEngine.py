@@ -4,6 +4,7 @@ import random
 import numpy as np
 import collections
 import Utils
+import io
 
 class GAEngine:
 
@@ -21,6 +22,13 @@ class GAEngine:
 		self.mutation_handlers = []
 		self.selection_handler = None
 		self.highest_fitness = None, float("-inf")
+	'''
+	def _execute_fitness_func(self,candidate):
+		print(self.fitness_func)
+		exec(self.fitness_func)
+		#print(func(candidate))
+		return self.fitness_func(candidate)
+	'''
 
 	def addCrossoverHandler(self,crossover_handler):
 		self.crossover_handlers.append(crossover_handler)
@@ -41,7 +49,7 @@ class GAEngine:
 		self.population.fitnessSort(self.fitness_func)
 
 	def calculateFitness(self,chromosome):
-		return self.fitness_func(chromosome)
+		return fitness_func(chromosome)
 
 	def generateFitnessDict(self):
 		self.fitness_dict = []
@@ -50,6 +58,7 @@ class GAEngine:
 			if self.fitness_func(member) > self.highest_fitness[1]:
 				self.highest_fitness = (member,self.fitness_func(member))
 
+
 	def handle_selection(self):
 		self.generateFitnessDict()
 		return self.selection_handler(self.population.members,self.fitness_dict,self)
@@ -57,7 +66,6 @@ class GAEngine:
 	def evolve(self,noOfIterations=200):
 		all_iterations = []
 		all_iterations.append([0,self.population.members])
-
 		print("Initial Population")
 		print(self.population.members)
 		print(noOfIterations)
@@ -84,7 +92,7 @@ class GAEngine:
 					child = self.mutation_handlers[0](mother)
 					self.population.new_members.append(child)
 		return all_iterations
-		
+
 
 	def execute_selection(self):
 		self.calculateAllFitness()
@@ -93,6 +101,7 @@ class GAEngine:
 		self.calculateAllFitness()
 		print(self.population.new_members)
 		print(len(self.population.new_members))
+
 
 
 if __name__ == '__main__':

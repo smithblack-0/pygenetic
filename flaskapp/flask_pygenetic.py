@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect,request
 from forms import PyGeneticForm
-import sys,os
+import sys, os , io
 from os import path
 from GAEngine import *
 from Utils import *
@@ -35,11 +35,15 @@ def generate_and_run():
     crossover_probability = float(request.form['crossover_probability'])
     maximum_iterations = int(request.form['maximum_iterations'])
     mutation_probability = float(request.form['mutation_probability'])
+    #fitness_func = request['fitness_func']
     #adaptive_mutation = request.form['adaptive_mutation']
     #smart_fitness = request.form['smart_fitness']
 
     factory = ChromosomeRangeFactory(int,8,1,9)
     import copy
+
+
+
     def fitness(board):
         fitness = 0
         for i in range(len(board)):
@@ -52,6 +56,7 @@ def generate_and_run():
             if(isSafe==True):
                 fitness += 1
         return fitness
+
 
     ga = GAEngine(fitness,8,factory,10,0.2,mutation_probability)
     ga.addCrossoverHandler(Utils.CrossoverHandlers.distinct)
