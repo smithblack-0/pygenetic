@@ -4,11 +4,12 @@ import random
 import numpy as np
 import collections
 import Utils
-import io
+import Evolution
+import Statistics
 
 class GAEngine:
 
-	def __init__(self,fitness_func,fitness_threshold,factory,population_size=100,cross_prob=0.8,mut_prob=0.4,adaptive_mutation=False,smart_fitness=False):
+	def __init__(self,fitness_func,fitness_threshold,factory,population_size=100,cross_prob=0.8,mut_prob=0.1,fitness_type='max',adaptive_mutation=True,smart_fitness=False):
 		self.fitness_func = fitness_func
 		self.fitness_threshold = fitness_threshold
 		self.factory = factory
@@ -16,19 +17,21 @@ class GAEngine:
 		self.population_size = population_size
 		self.cross_prob = cross_prob
 		self.mut_prob = mut_prob
-		self.adaptive_mutation = adaptive_mutation
+		#self.adaptive_mutation = adaptive_mutation
 		self.smart_fitness = smart_fitness
 		self.crossover_handlers = []
 		self.mutation_handlers = []
 		self.selection_handler = None
-		self.highest_fitness = None, float("-inf")
-	'''
-	def _execute_fitness_func(self,candidate):
-		print(self.fitness_func)
-		exec(self.fitness_func)
-		#print(func(candidate))
-		return self.fitness_func(candidate)
-	'''
+		self.fitness_type = fitness_type
+		if self.fitness_type == 'max':
+			self.best_fitness = None, float("-inf")
+		elif self.fitness_type == 'min':
+			self.best_fitness = None, float("inf")
+		if adaptive_mutation == True:
+			self.dynamic_mutation = None
+		#elif self.fitness_type ==
+		self.statistics = Statistics.Statistics()
+		self.evolution = Evolution.StandardEvolution(100,adaptive_mutation=adaptive_mutation)
 
 	def addCrossoverHandler(self,crossover_handler):
 		self.crossover_handlers.append(crossover_handler)
@@ -45,62 +48,37 @@ class GAEngine:
 	def setSelectionHandler(self,selection_handler):
 		self.selection_handler = selection_handler
 
-	def calculateAllFitness(self):
-		self.population.fitnessSort(self.fitness_func)
-
 	def calculateFitness(self,chromosome):
-		return fitness_func(chromosome)
+		return self.fitness_func(chromosome)
 
 	def generateFitnessDict(self):
 		self.fitness_dict = []
 		for member in self.population.members:
 			self.fitness_dict.append((member,self.fitness_func(member)))
-			if self.fitness_func(member) > self.highest_fitness[1]:
-				self.highest_fitness = (member,self.fitness_func(member))
-
+			if self.fitness_type == 'max' and self.fitness_func(member) > self.best_fitness[1]:
+				self.best_fitness = (member,self.fitness_func(member))
+			elif self.fitness_type == 'min' and self.fitness_func(member) < self.best_fitness[1]:
+				self.best_fitness = (member, self.fitness_func(member))
 
 	def handle_selection(self):
 		self.generateFitnessDict()
 		return self.selection_handler(self.population.members,self.fitness_dict,self)
 
-	def evolve(self,noOfIterations=200):
+	def evolve(self,noOfIterations=50):
+
 		all_iterations = []
-		all_iterations.append([0,self.population.members])
-		print("Initial Population")
-		print(self.population.members)
-		print(noOfIterations)
 		for i in range(noOfIterations):
-			self.population.new_members = self.handle_selection()
-			all_iterations.append([i ,self.population.new_members])
-			if self.highest_fitness[1] == self.fitness_threshold:
-				return "SOLVED"
-				all_iterations.append([i,"Solved"])
-				break
-			iteration_size = len(self.population.new_members)
-			if iteration_size%2==1:
-				iteration_size -= 1
-			for j in range(0,iteration_size,2):
-				father, mother = self.population.new_members[j], self.population.new_members[j+1]
-				if random.random() <= self.cross_prob:
-					child1, child2 = self.crossover_handlers[0](father,mother)
-					self.population.new_members.append(child1)
-					self.population.new_members.append(child2)
-				if random.random() <= self.mut_prob:
-					child = self.mutation_handlers[0](father)
-					self.population.new_members.append(child)
-				if random.random() <= self.mut_prob:
-					child = self.mutation_handlers[0](mother)
-					self.population.new_members.append(child)
+			result = self.evolution.evolve(self)
+			candidates = result[1]
+			all_iterations.append([i, candidates])
+			self.statistics.compute(self.best_fitness[1])
+			if result[0]:
+				print('SOLVED')
+				self.statistics.plot()
+				return all_iterations
+
 		return all_iterations
 
-
-	def execute_selection(self):
-		self.calculateAllFitness()
-		self.population.new_members = self.population.getPercentOfPopulation(self.cross_prob,self.fitness_func)
-		self.max_fitness = self.population.getMaxFitness(fitness_func)
-		self.calculateAllFitness()
-		print(self.population.new_members)
-		print(len(self.population.new_members))
 
 
 
@@ -125,7 +103,7 @@ if __name__ == '__main__':
 				fitness += 1
 		return fitness
 
-	ga = GAEngine(fitness,100,factory,10,0.8,0.66)
+	ga = GAEngine(fitness,8,factory,100)
 	ga.addCrossoverHandler(Utils.CrossoverHandlers.distinct)
 	ga.addMutationHandler(Utils.MutationHandlers.swap)
 	ga.setSelectionHandler(Utils.SelectionHandlers.basic)

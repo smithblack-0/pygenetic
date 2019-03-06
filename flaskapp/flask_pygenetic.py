@@ -6,6 +6,8 @@ from GAEngine import *
 from Utils import *
 from ChromosomeFactory import *
 from Utils import *
+import matplotlib.pyplot as plt
+
 #sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 #from pyGenetic import GAEngine, Population, ChromosomeFactory, Utils
 
@@ -31,10 +33,10 @@ def generate_and_run():
     #chromosome = request.form['chromosome']
     fitness_threshold = request.form['fitness_threshold']
     #factory = request.form['factory']
-    population_size = request.form['population_size']
-    crossover_probability = float(request.form['crossover_probability'])
+    population_size = int(request.form['population_size'])
+    #crossover_probability = float(request.form['crossover_probability'])
     maximum_iterations = int(request.form['maximum_iterations'])
-    mutation_probability = float(request.form['mutation_probability'])
+    #mutation_probability = float(request.form['mutation_probability'])
     #fitness_func = request['fitness_func']
     #adaptive_mutation = request.form['adaptive_mutation']
     #smart_fitness = request.form['smart_fitness']
@@ -58,7 +60,8 @@ def generate_and_run():
         return fitness
 
 
-    ga = GAEngine(fitness,8,factory,10,0.2,mutation_probability)
+    #ga = GAEngine(fitness, fitness_threshold ,factory,population_size, crossover_probability, mutation_probability)
+    ga = GAEngine(fitness, fitness_threshold ,factory,population_size)
     ga.addCrossoverHandler(Utils.CrossoverHandlers.distinct)
     ga.addMutationHandler(Utils.MutationHandlers.swap)
     ga.setSelectionHandler(Utils.SelectionHandlers.basic)
