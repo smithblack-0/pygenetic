@@ -1,18 +1,14 @@
 from flask import Flask, render_template, url_for, flash, redirect,request
 from forms import PyGeneticForm
-
+import sys,os
+from os import path
 from GAEngine import *
 from Utils import *
 from ChromosomeFactory import *
-from Population import *
+from Utils import *
+#sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+#from pyGenetic import GAEngine, Population, ChromosomeFactory, Utils
 
-import sys
-
-
-sys.path.append('C:/pygenetic')
-
-from pyGenetic import *
-# import pyGenetic
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -25,7 +21,8 @@ def pygenetic():
         return render_template('pygenetic.html',title='Pygenetic',form=form)
 
     elif request.method == "POST":
-        return generate_and_run()
+        results = generate_and_run()
+        return render_template('result.html', title = 'Result', results = results)
 
 
 
@@ -35,14 +32,14 @@ def generate_and_run():
     fitness_threshold = request.form['fitness_threshold']
     #factory = request.form['factory']
     population_size = request.form['population_size']
-    #crossover_probability = request.form['crossover_probability']
+    crossover_probability = float(request.form['crossover_probability'])
     maximum_iterations = int(request.form['maximum_iterations'])
-    #mutation_probability = request.form['mutation_probability']
+    mutation_probability = float(request.form['mutation_probability'])
     #adaptive_mutation = request.form['adaptive_mutation']
     #smart_fitness = request.form['smart_fitness']
 
+    factory = ChromosomeRangeFactory(int,8,1,9)
     import copy
-    factory = ChromosomeFactory.ChromosomeRangeFactory(int,8,1,9)
     def fitness(board):
         fitness = 0
         for i in range(len(board)):
@@ -56,31 +53,14 @@ def generate_and_run():
                 fitness += 1
         return fitness
 
-    ga = GAEngine(fitness,8,factory,10)
-
-
-
+    ga = GAEngine(fitness,8,factory,10,0.2,mutation_probability)
     ga.addCrossoverHandler(Utils.CrossoverHandlers.distinct)
     ga.addMutationHandler(Utils.MutationHandlers.swap)
     ga.setSelectionHandler(Utils.SelectionHandlers.basic)
-    ga.evolve(maximum_iterations)
+    all_iterations_result = ga.evolve(maximum_iterations)
+    return all_iterations_result
 
-    '''
-    genes_per_chromosome = request.form['no_of_genes']
-    crossover_prob = request.form['crossover_probability']
-    mutation_prob = request.form['mutation_probability']
-    population_size = request.form['population_size']
-    fitness_func = request.form['fitness_function']
-    max_iteration = request.form['maximum_iterations']
-    crossover_type = request.form['crossover_type']
-    mutation_type = request.form['mutation_type']
-    selection = request.form['selection_type']
-
-    ga = new GAEngine(chromosome, fitness_threshold, factory , population_size,
-                        crossover_probability, mutation_probability, adaptive_mutation,
-                        smart_fitness)
-    '''
-    return "sdklfj"
+    #return "sdklfj"
 
 if __name__ == '__main__':
     app.run(debug=True)

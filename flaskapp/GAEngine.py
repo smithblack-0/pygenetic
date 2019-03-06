@@ -55,19 +55,24 @@ class GAEngine:
 		return self.selection_handler(self.population.members,self.fitness_dict,self)
 
 	def evolve(self,noOfIterations=200):
+		all_iterations = []
+		all_iterations.append([0,self.population.members])
+
+		print("Initial Population")
+		print(self.population.members)
 		print(noOfIterations)
 		for i in range(noOfIterations):
 			self.population.new_members = self.handle_selection()
-			print(self.population.new_members)
-			print(self.highest_fitness[1])
+			all_iterations.append([i ,self.population.new_members])
 			if self.highest_fitness[1] == self.fitness_threshold:
-				print('SOLVED')
+				return "SOLVED"
+				all_iterations.append([i,"Solved"])
 				break
 			iteration_size = len(self.population.new_members)
 			if iteration_size%2==1:
 				iteration_size -= 1
-			for i in range(0,iteration_size,2):
-				father, mother = self.population.new_members[i], self.population.new_members[i+1]
+			for j in range(0,iteration_size,2):
+				father, mother = self.population.new_members[j], self.population.new_members[j+1]
 				if random.random() <= self.cross_prob:
 					child1, child2 = self.crossover_handlers[0](father,mother)
 					self.population.new_members.append(child1)
@@ -78,6 +83,8 @@ class GAEngine:
 				if random.random() <= self.mut_prob:
 					child = self.mutation_handlers[0](mother)
 					self.population.new_members.append(child)
+		return all_iterations
+		
 
 	def execute_selection(self):
 		self.calculateAllFitness()
@@ -109,8 +116,8 @@ if __name__ == '__main__':
 				fitness += 1
 		return fitness
 
-	ga = GAEngine(fitness,8,factory,10)
+	ga = GAEngine(fitness,100,factory,10,0.8,0.66)
 	ga.addCrossoverHandler(Utils.CrossoverHandlers.distinct)
 	ga.addMutationHandler(Utils.MutationHandlers.swap)
 	ga.setSelectionHandler(Utils.SelectionHandlers.basic)
-	ga.evolve(1)
+	ga.evolve(100)

@@ -11,15 +11,8 @@ class Population:
 	def createMembers(self,factory):
 		for i in range(self.population_size):
 			self.members.append(factory.createChromosome())
-		print(self.members)
-
-
-
-
-
-
-
-
+		#print(self.members)
+		return self.members
 
 	def fitnessSort(self,fitness_func):
 		self.sorted_chromosomes = sorted(self.population.members,key=self.fitness_func,reverse=True)
