@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>Py Genetic Demo</title>
+</head>
+<body>
+
+  <div class="container">
+
+  <form action = '/' method = "POST">
+
+    <u><h3 class="page-header"> Chromsome Type </h3> </u>
+  	<div class="row">
+        <div class="col-md-4">
+          <h6>Chromosome Dimensions </h6>
+            <select class="form-control">
+                <option>1D</option>
+                <option>2D</option>
+                <option>Other</option>
+          	</select>
+        </div>
+
+        <div class="col-md-4">
+           <h6>No of Genes</h6>
+               <input name = "no_of_genes" placeholder="No of Genes" class="form-control" />
+        </div>
+
+        <div class="col-md-4">
+          <h6>Generation method</h6>
+         <select class="form-control">
+                <option>Regex</option>
+                <option>Range</option>
+            </select>
+        </div>
+    </div>
+
+    <br>
+
+    <u><h3 class="page-header"> Population Details </h3> </u>
+  	<div class="row">
+        <div class="col-md-4">
+          <h6>Population Size </h6>
+          <input name = "population_size" placeholder="Population Size" class="form-control"/>
+        </div>
+
+        <div class="col-md-4">
+          <h6>Crossover Rate </h6>
+          <input name = "crossover_probability" placeholder="Crossover Rate" class="form-control"/>
+        </div>
+
+        <div class="col-md-4">
+          <h6>Mutation Rate </h6>
+          <input name = "mutation_probability" placeholder="Mutation Rate" class="form-control"/>
+        </div>
+    </div>
+
+    <br>
+
+    <u><h3 class="page-header"> Iteration Details </h3> </u>
+    <div class="row">
+        <div class="col-md-4">
+          <h6>Max Iterations</h6>
+          <input name = "maximum_iterations" placeholder="Maximum Iterations" class="form-control"/>
+        </div>
+
+         <div class="col-md-4">
+          <h6>Chromosome Dimensions </h6>
+            <select class="form-control">
+                <option>Min</option>
+                <option>Max</option>
+                <option>Equal</option>
+            </select>
+        </div>
+    </div>
+
+    <br>
+
+    <u><h3 class="page-header"> Selection Handler </h3> </u>
+    <div class="row">
+        <div class="col-md-4">
+          <h6>Select Selection Handler</h6>
+           <select class="form-control">
+                <option>Basic</option>
+                <option>Handler 1</option>
+                <option>Handler 2</option>
+            </select>
+        </div>
+    </div>
+
+    <br>
+
+
+    <u><h3 class="page-header"> Crossover Handler </h3> </u>
+    <div class="row">
+        <div class="col-md-4">
+          <h6>Select Crossover Handler</h6>
+           <select class="form-control">
+                <option>Distinct</option>
+                <option>Handler 1</option>
+                <option>Handler 2</option>
+            </select>
+        </div>
+    </div>
+
+    <br>
+
+    <u><h3 class="page-header"> Mutation Handler </h3> </u>
+    <div class="row">
+        <div class="col-md-4">
+          <h6>Select Mutation Handler</h6>
+           <select class="form-control">
+                <option>Swap</option>
+                <option>Handler 1</option>
+                <option>Handler 2</option>
+            </select>
+        </div>
+    </div>
+
+    <br>
+
+    <u><h3 class="page-header"> Evolve </h3> </u>
+    <div class="row">
+        <div class="col-md-4">
+          <h6>Select Evolution method</h6>
+           <select class="form-control">
+                <option>Handler 1</option>
+                <option>Handler 2</option>
+            </select>
+        </div>
+    </div>
+  
+    <br/>
+    <button type="submit" class="btn btn-success">Generate Code and Run</button>
+  </form>
+
+
+  </div>
+<br/>
+
+</body>
+</html>
