@@ -20,6 +20,7 @@ class BaseEvolution(ABC):
 
 	def __init__(self,max_iterations):
 		self.max_iterations = max_iterations
+		self.current_iteration = 0
 
 	@abstractmethod
 	def evolve(self,ga):
@@ -52,6 +53,7 @@ class StandardEvolution(BaseEvolution):
 		BaseEvolution.__init__(self,max_iterations)
 		self.adaptive_mutation = adaptive_mutation
 		self.pyspark = pyspark
+		self.prev_avg_sq_dev = 0
 
 	def __evolve_normal(self,ga):
 
@@ -110,13 +112,21 @@ class StandardEvolution(BaseEvolution):
 			crossoverHandler = ga.chooseCrossoverHandler()
 			child1, child2 = crossoverHandler(father,mother)
 			ga.population.new_members.extend([child1,child2])
-		print("adaptive_mutation value passed = ",self.adaptive_mutation)
+		#print("adaptive_mutation value passed = ",self.adaptive_mutation)
 
 		if self.adaptive_mutation == True:
 			mean_fitness = sum(fitnesses)/len(fitnesses)
+			print("Mean fitness = ", mean_fitness)
 			average_square_deviation = math.sqrt(sum((fitness - mean_fitness)**2 for fitness in fitnesses)) / len(fitnesses)
+			print("Average square deviation = ", average_square_deviation)
 			ga.diversity = average_square_deviation
-			ga.dynamic_mutation = ga.mut_prob * ( 1 + ((ga.best_fitness[1]-average_square_deviation) / (ga.best_fitness[1]+average_square_deviation) ) )
+			if self.current_iteration > 1:
+				ga.dynamic_mutation = ga.mut_prob * ( 1 + ( (average_square_deviation-self.prev_avg_sq_dev) / (average_square_deviation+self.prev_avg_sq_dev) ) )
+			self.prev_avg_sq_dev = average_square_deviation
+			#ga.dynamic_mutation = ga.mut_prob * ( 1 + ((ga.best_fitness[1]-average_square_deviation) / (ga.best_fitness[1]+average_square_deviation) ) )
+			if ga.dynamic_mutation > 1:
+				ga.dynamic_mutation = 1
+
 			print('Adaptive mutation value = ',ga.dynamic_mutation)
 			mutation_indexes = np.random.choice(len(ga.population.new_members),int(ga.dynamic_mutation*len(p)), replace=False)
 		else:
@@ -221,6 +231,7 @@ class StandardEvolution(BaseEvolution):
 
 		"""
 		#print(self.max_iterations)
+		self.current_iteration += 1
 		if self.pyspark == False:
 			if self.__evolve_normal(ga):
 				return 1

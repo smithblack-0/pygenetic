@@ -111,7 +111,7 @@ class GAEngine:
 		elif self.fitness_type == 'equal':	# Fitness must be absolute difference between member score and fitness_threshold
 			self.best_fitness = None, float("inf")
 		if adaptive_mutation == True:
-			self.dynamic_mutation = None
+			self.dynamic_mutation = mut_prob
 			self.diversity = None
 		#elif self.fitness_type ==
 		self.statistics = Statistics.Statistics()
@@ -254,13 +254,13 @@ class GAEngine:
 		for i in range(len(self.mutation_handlers_weights)):
 			cumsum += self.mutation_handlers_weights[i]
 			self.mutation_handlers_weights[i] = cumsum/total
-		print("mutation_handlers_weights = ",self.mutation_handlers_weights)
+		#print("mutation_handlers_weights = ",self.mutation_handlers_weights)
 		total = sum(self.crossover_handlers_weights)
 		cumsum = 0
 		for i in range(len(self.crossover_handlers_weights)):
 			cumsum += self.crossover_handlers_weights[i]
 			self.crossover_handlers_weights[i] = cumsum/total
-		print("crossover_handlers_weights = ",self.crossover_handlers_weights)
+		#print("crossover_handlers_weights = ",self.crossover_handlers_weights)
 
 	def chooseCrossoverHandler(self):
 		"""
@@ -309,7 +309,7 @@ class GAEngine:
 			result = self.evolution.evolve(self)
 			self.statistics.add_statistic('max',self.fitness_dict[0][1])
 			self.statistics.add_statistic('min',self.fitness_dict[-1][1])
-			print('Fitness Dict', self.fitness_dict)
+			#print('Fitness Dict', self.fitness_dict)
 			fitnesses = [x[1] for x in self.fitness_dict]
 			self.statistics.add_statistic('avg',sum(fitnesses)/len(fitnesses))
 			if self.adaptive_mutation:
@@ -320,7 +320,9 @@ class GAEngine:
 				break
 		self.statistics.plot_statistics(['max','min','avg'])
 		if self.adaptive_mutation:
-			self.statistics.plot_statistics(['diversity','mutation_rate'])
+			#self.statistics.plot_statistics(['diversity','mutation_rate'])
+			self.statistics.plot_statistics(['diversity'])
+			self.statistics.plot_statistics(['mutation_rate'])
 
 
 if __name__ == '__main__':
@@ -348,7 +350,7 @@ if __name__ == '__main__':
 	# best sequence i found: 0 5 2 7 1 6 4 3
 
 
-	ga = GAEngine(8,factory,100,fitness_type='min',mut_prob = 0.3)
+	ga = GAEngine(8,factory,100,fitness_type='min',mut_prob = 0.5)
 	ga.addCrossoverHandler(Utils.CrossoverHandlers.PMX, 9)
 
 	#ga = GAEngine(fitness,8,factory,20)#,fitness_type='equal')

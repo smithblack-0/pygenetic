@@ -42,14 +42,14 @@ class Statistics:
 
 		"""
 		for statistic in self.statistic_dict:
-			print(statistic,self.statistic_dict[statistic])
+			#print(statistic,self.statistic_dict[statistic])
 			plt.plot(range(len(self.statistic_dict[statistic])),self.statistic_dict[statistic],label=statistic)
 		plt.legend(loc='upper left')
 		plt.show()
 
 	def plot_statistics(self,statistics):
 		for statistic in statistics:
-			print(statistic,self.statistic_dict[statistic])
+			#print(statistic,self.statistic_dict[statistic])
 			plt.plot(range(len(self.statistic_dict[statistic])),self.statistic_dict[statistic],label=statistic)
 		plt.legend(loc='upper left')
 		plt.show()
