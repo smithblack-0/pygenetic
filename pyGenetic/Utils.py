@@ -36,7 +36,7 @@ class SelectionHandlers:
 		List of fittest individuals
 
 		"""
-
+		#print(fitness_dict)
 		pop = sorted(pop,key=lambda x:fitness_dict[1])
 		return pop[:len(pop)-math.ceil(ga.cross_prob * len(pop))]
 

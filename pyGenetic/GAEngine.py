@@ -10,7 +10,8 @@ import bisect
 import math
 
 class GAEngine:
-	"""This Class is the main driver program which contains and invokes the operators used in Genetic algorithm
+	"""
+	This Class is the main driver program which contains and invokes the operators used in Genetic algorithm
 
 	GAEngine keeps track of specific type of operators the user has specified for running the algorithm
 
@@ -254,8 +255,8 @@ class GAEngine:
 		"""
 
 		self.fitness_dict = [(member, self.calculateFitness(member)) for member in self.population.members]
-		if type(self.fitness_dict) is not dict:
-			raise ValueError("Fitness dictionary not created correctly")
+		#if type(self.fitness_dict) is not dict:
+		#	raise ValueError("Fitness dictionary not created correctly")
 
 
 	def handle_selection(self):
@@ -312,13 +313,13 @@ class GAEngine:
 		for i in range(len(self.mutation_handlers_weights)):
 			cumsum += self.mutation_handlers_weights[i]
 			self.mutation_handlers_weights[i] = cumsum/total
-		print("mutation_handlers_weights = ",self.mutation_handlers_weights)
+		#print("mutation_handlers_weights = ",self.mutation_handlers_weights)
 		total = sum(self.crossover_handlers_weights)
 		cumsum = 0
 		for i in range(len(self.crossover_handlers_weights)):
 			cumsum += self.crossover_handlers_weights[i]
 			self.crossover_handlers_weights[i] = cumsum/total
-		print("crossover_handlers_weights = ",self.crossover_handlers_weights)
+		#print("crossover_handlers_weights = ",self.crossover_handlers_weights)
 
 	def chooseCrossoverHandler(self):
 		"""
@@ -388,15 +389,15 @@ class GAEngine:
 				mean_fitness = sum(fitnesses)/len(fitnesses)
 				average_square_deviation = math.sqrt(sum((fitness - mean_fitness)**2 for fitness in fitnesses)) / len(fitnesses)
 				self.diversity = average_square_deviation
-				print("AVG SQ DEV = ", average_square_deviation)
+				#print("AVG SQ DEV = ", average_square_deviation)
 				if average_square_deviation == 0:
 					average_square_deviation = random.uniform(0.01, 0.02)
 				self.dynamic_mutation = self.mut_prob * ( 1 + ((self.best_fitness[1]-average_square_deviation) / (average_square_deviation+self.best_fitness[1]) ) )
 				#print(mean_fitness)
 				#print(average_square_deviation)
-				print("Diversity = ",self.diversity)
+				#print("Diversity = ",self.diversity)
 				#print(ga.best_fitness)
-				print('Adaptive mutation value = ',self.dynamic_mutation)
+				#print('Adaptive mutation value = ',self.dynamic_mutation)
 
 			if self.population_control:
 				if len(self.population.members) > self.population.population_size:
@@ -405,8 +406,8 @@ class GAEngine:
 					self.population.members = self.population.members * int(len(self.population.population_size)/len(self.population.members)) + self.population.members[:len(self.population.population_size)%len(self.population.members)]
 				print(self.population.population_size)
 				print('hi',len(self.population.members))
-			print(self.population.population_size)
-			print('hi',len(self.population.members))
+			#print(self.population.population_size)
+			#print('hi',len(self.population.members))
 			self.statistics.add_statistic('best',self.fitness_dict[0][1])
 			self.statistics.add_statistic('worst',self.fitness_dict[-1][1])
 			#print('Fitness Dict', self.fitness_dict)
@@ -417,9 +418,9 @@ class GAEngine:
 			if result == 1:
 				print('SOLVED')
 				break
-		print("Best fitness in this generation = ", self.best_fitness)
-		print("Best among all generations = ", self.hall_of_fame)
-		print(self.fitness_dict[:10])
+		#print("Best fitness in this generation = ", self.best_fitness)
+		#print("Best among all generations = ", self.hall_of_fame)
+		#print(self.fitness_dict[:10])
 		
 
 	def continue_evolve(self, noOfIterations=20):

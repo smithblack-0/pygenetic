@@ -17,20 +17,18 @@ def fitness(board):
 				fitness += 1
 		return fitness
 
-factory = ChromosomeFactory.ChromosomeRangeFactory(data_type=int,noOfGenes=14,minValue=1,maxValue=15)
-ga = GAEngine.GAEngine(factory,100,fitness_type=('equal',14),mut_prob = 0.3)
-#ga.addCrossoverHandler(Utils.CrossoverHandlers.PMX, 9)
+factory = ChromosomeFactory.ChromosomeRangeFactory(data_type=int,noOfGenes=4,minValue=1,maxValue=4)
+ga = GAEngine.GAEngine(factory,2,fitness_type=('equal',4),mut_prob = 0.3)
 
 ga.addCrossoverHandler(Utils.CrossoverHandlers.distinct, 4)
-#ga.addCrossoverHandler(Utils.CrossoverHandlers.OX, 3)
 ga.addMutationHandler(Utils.MutationHandlers.swap)
 
-ga.setSelectionHandler(Utils.SelectionHandlers.largest)
+ga.setSelectionHandler(Utils.SelectionHandlers.basic)
 ga.setFitnessHandler(fitness)
 
-ga.evolve(100)
+ga.evolve(3)
 
-fig = ga.statistics.plot_statistics(['best','worst','avg'])
-plt.show()
-fig = ga.statistics.plot_statistics(['diversity','mutation_rate'])
-plt.show()
+#fig = ga.statistics.plot_statistics(['best','worst','avg'])
+#plt.show()
+#fig = ga.statistics.plot_statistics(['diversity','mutation_rate'])
+#plt.show()
