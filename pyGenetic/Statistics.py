@@ -38,7 +38,7 @@ class Statistics:
 		fig,ax = plt.subplots()
 		ax.set_xlabel('Generations')
 		for statistic in self.statistic_dict:
-			print(statistic,self.statistic_dict[statistic])
+			# print(statistic,self.statistic_dict[statistic])
 			ax.plot(range(1,len(self.statistic_dict[statistic])+1),self.statistic_dict[statistic],label=statistic)
 		ax.set_xlabel('generation')
 		ax.set_ylabel('fitness')
@@ -49,7 +49,7 @@ class Statistics:
 		fig,ax = plt.subplots()
 		ax.set_xlabel('Generations')
 		for statistic in statistics:
-			print(statistic,self.statistic_dict[statistic])
+			# print(statistic,self.statistic_dict[statistic])
 			ax.plot(range(1,len(self.statistic_dict[statistic])+1),self.statistic_dict[statistic],label=statistic)
 		ax.set_xlabel('generation')
 		ax.set_ylabel('fitness')
