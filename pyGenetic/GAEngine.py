@@ -91,8 +91,11 @@ class GAEngine:
 		self.fitness_func = None
 		self.factory = factory
 		self.cross_prob = cross_prob
-		self.mut_prob = mut_prob
 		self.adaptive_mutation = adaptive_mutation
+		if self.adaptive_mutation:
+			self.initial_mut_prob = mut_prob
+		else:
+			self.mut_prob = mut_prob
 		self.crossover_handlers = []
 		self.crossover_handlers_weights = []
 		self.mutation_handlers = []
@@ -123,7 +126,6 @@ class GAEngine:
 		self.crossover_external_data = {}
 		self.mutation_external_data = {}
 		self.hall_of_fame = None
-		self.last_20_fitnesses = collections.deque([])
 
 	def addCrossoverHandler(self,crossover_handler, weight = 1, *args):
 		"""
@@ -258,7 +260,7 @@ class GAEngine:
 			else:
 				self.hall_of_fame = self.best_fitness
 
-	def handle_selection(self):
+	def handle_selection(self,repeat_chromosome_sorting=False):
 
 		"""
 		Invokes generateFitnessDict() to generate dictionary of (chromosome,fitness)
@@ -269,7 +271,8 @@ class GAEngine:
 		List of  fittest members of population
 
 		"""
-		self.generateFitnessMappings()
+		if repeat_chromosome_sorting:
+			self.generateFitnessMappings()
 		if self.selection_external_data:
 			return self.selection_handler(self.fitness_mappings,self, *(self.selection_external_data))
 		else:
@@ -341,6 +344,7 @@ class GAEngine:
 		"""
 		self.population = Population.Population(self.factory,self.population_size)
 		self.statistics = Statistics.Statistics()
+		self.last_20_fitnesses = collections.deque([])
 		self.continue_evolve(noOfIterations)
 		
 	def continue_evolve(self, noOfIterations=20):
